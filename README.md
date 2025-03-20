@@ -6,7 +6,7 @@ I can assign my friends the item they had and it will give me the total the owe 
 
 ![This is a screenshot.](images.png)
 # How to run
-Provide here instructions on how to use your application.   
+Follow instructions at https://nodejs.org/en/download/ to make sure your computer has Node.js V23.10.0 with npm package manager. Then, clone the project to desired folder. In terminal, navigate to "/whoowesmemoney" within the folder. Then, run "npm run build". After the build step is complete, run "npm run start" or "npm start" to begin the application. Then, navigate to the provided local URL on your machine, or the address labeled "On Your Network" on a different device.
  
 
 # How to contribute
