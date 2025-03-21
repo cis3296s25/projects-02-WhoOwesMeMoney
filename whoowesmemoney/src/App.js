@@ -13,7 +13,9 @@ function App() {
           To run "cd whoowesmemoney"
           then "npm start"
           This text is by Mohammad Eisa.
+          This text is by Eric Bonifacic.
           This text is by Hena.
+          This text is by Josh Ly.
         </p>
         <p>
           "Ctrl C" to end
