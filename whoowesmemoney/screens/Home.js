@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+
 
 
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
@@ -58,6 +60,7 @@ export default function Home({navigation}) {
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
       </View>
+      <Button title="Add a Debtor" onPress={() => navigation.navigate('Person')} />
       <Button title="Go to Gallery" onPress={() => navigation.navigate('Gallery')} />
     </SafeAreaView>
     
