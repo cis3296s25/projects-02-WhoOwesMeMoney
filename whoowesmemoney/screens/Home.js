@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
@@ -50,14 +50,14 @@ export default function App() {
 
 
   return (
-    <ScrollView style={styles.scroll}>
+    <SafeAreaView style={styles.scroll}>
       <View style={styles.container}>
         <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
         {image && <Image source={{ uri: image }} style={styles.image} />}
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
