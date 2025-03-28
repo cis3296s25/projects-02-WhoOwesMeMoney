@@ -3,9 +3,10 @@ import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
+
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
 
-export default function App() {
+export default function Home({navigation}) {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
 
@@ -57,7 +58,9 @@ export default function App() {
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
       </View>
+      <Button title="Go to Gallery" onPress={() => navigation.navigate('Gallery')} />
     </SafeAreaView>
+    
   );
 }
 
