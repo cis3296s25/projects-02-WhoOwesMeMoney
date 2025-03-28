@@ -62,8 +62,21 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  /*
   scroll: { flex: 1, backgroundColor: '#fff' },
   container: { padding: 20, alignItems: 'center' },
+  image: { width: 300, height: 400, marginVertical: 20 },
+  label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
+  result: { marginTop: 10, fontSize: 16, textAlign: 'left', width: '100%' },
+  */
+
+  scroll: { flex: 1, backgroundColor: '#fff' },
+  container: { 
+    flex: 1, 
+    padding: 20, 
+    alignItems: 'center', 
+    paddingTop: 70, // Adjust this value as needed
+  },
   image: { width: 300, height: 400, marginVertical: 20 },
   label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
   result: { marginTop: 10, fontSize: 16, textAlign: 'left', width: '100%' },
