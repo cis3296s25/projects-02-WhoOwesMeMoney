@@ -77,6 +77,12 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     paddingTop: 70, // Adjust this value as needed
   },
+  buttonContainer: {
+    width: 300,
+    height: 70,
+    justifyContent: 'center',
+    marginVertical: 20,
+  },
   image: { width: 300, height: 400, marginVertical: 20 },
   label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
   result: { marginTop: 10, fontSize: 16, textAlign: 'left', width: '100%' },
