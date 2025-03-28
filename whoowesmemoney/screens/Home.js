@@ -8,7 +8,7 @@ import * as FileSystem from 'expo-file-system';
 
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
 
-export default function Home({navigation}) {
+export default function App() {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
 
@@ -53,7 +53,7 @@ export default function Home({navigation}) {
 
 
   return (
-    <SafeAreaView style={styles.scroll}>
+    <ScrollView style={styles.scroll}>
       <View style={styles.container}>
         <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
         {image && <Image source={{ uri: image }} style={styles.image} />}
