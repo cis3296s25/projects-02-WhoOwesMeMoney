@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
+
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
 
-export default function App() {
+export default function Home({navigation}) {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
 
@@ -50,14 +51,16 @@ export default function App() {
 
 
   return (
-    <ScrollView style={styles.scroll}>
+    <SafeAreaView style={styles.scroll}>
       <View style={styles.container}>
         <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
         {image && <Image source={{ uri: image }} style={styles.image} />}
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
       </View>
-    </ScrollView>
+      <Button title="Go to Gallery" onPress={() => navigation.navigate('Gallery')} />
+    </SafeAreaView>
+    
   );
 }
 
