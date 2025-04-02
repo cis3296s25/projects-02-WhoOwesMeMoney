@@ -23,8 +23,7 @@ npx expo start
 2. eas build:configure
     -Choose Android
 
-If asked for login ask Billy for account info
-
+Login into expo dev in terminal
 3. eas build -p android --profile preview
 
 Will output a .apk you can download and transfer to any android device or test immediately on emulator
