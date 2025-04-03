@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
-import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
 
-
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
 
-export default function App() {
+export default function Home({navigation}) {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
 
@@ -47,16 +45,20 @@ export default function App() {
 
     const data = await response.json();
     console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
+    console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
     const text = data.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
     setOcrText(text);
   };
 
 
+
   return (
-    <ScrollView style={styles.scroll}>
+    <SafeAreaView style={styles.scroll}>
       <View style={styles.container}>
         <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
+        <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
         {image && <Image source={{ uri: image }} style={styles.image} />}
+        <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
       </View>
@@ -69,6 +71,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#fff' },
+  container: { padding: 20, alignItems: 'center' },
   container: { padding: 20, alignItems: 'center' },
   image: { width: 300, height: 400, marginVertical: 20 },
   label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
