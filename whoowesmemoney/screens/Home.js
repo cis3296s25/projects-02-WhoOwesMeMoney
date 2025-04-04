@@ -56,9 +56,7 @@ export default function Home({navigation}) {
     <SafeAreaView style={styles.scroll}>
       <View style={styles.container}>
         <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
-        <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
         {image && <Image source={{ uri: image }} style={styles.image} />}
-        <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
       </View>
