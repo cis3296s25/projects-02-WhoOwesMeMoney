@@ -45,9 +45,11 @@ export default function Home({navigation}) {
 
     const data = await response.json();
     console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
+    console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
     const text = data.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
     setOcrText(text);
   };
+
 
 
   return (
@@ -58,6 +60,7 @@ export default function Home({navigation}) {
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
       </View>
+      <Button title="Add a Debtor" onPress={() => navigation.navigate('Person')} />
       <Button title="Go to Gallery" onPress={() => navigation.navigate('Gallery')} />
     </SafeAreaView>
     
@@ -66,6 +69,7 @@ export default function Home({navigation}) {
 
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#fff' },
+  container: { padding: 20, alignItems: 'center' },
   container: { padding: 20, alignItems: 'center' },
   image: { width: 300, height: 400, marginVertical: 20 },
   label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
