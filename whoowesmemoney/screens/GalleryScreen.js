@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 // import React from 'react';
 // import { View, Text, Button } from 'react-native';
 
@@ -18,6 +19,11 @@ export default function GalleryScreen() {
     { id: '2', uri: 'https://via.placeholder.com/150', name: 'Receipt 2' },
     { id: '3', uri: 'https://via.placeholder.com/150', name: 'Receipt 3' },
   ]);
+=======
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import * as FileSystem from 'expo-file-system'
+>>>>>>> Stashed changes
 
   return (
     <View style={styles.container}>
