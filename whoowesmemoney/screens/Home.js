@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Image, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
-
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
+  const [foodItems, setFoodItems] = useState([]);
 
   const pickImageAndScan = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -44,34 +44,112 @@ export default function Home({navigation}) {
     );
 
     const data = await response.json();
-    console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
-    console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
     const text = data.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
     setOcrText(text);
+
+    const items = extractFoodItems(text);
+    setFoodItems(items);
   };
 
+  const extractFoodItems = (ocrText) => {
+    const lines = ocrText
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line !== '');
 
+    const mergedLines = [];
+    for (let i = 0; i < lines.length; i++) {
+      const currentLine = lines[i];
+      const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
+      if (!/\d+\.\d{2}/.test(currentLine) && /\d+\.\d{2}/.test(nextLine)) {
+        mergedLines.push(`${currentLine} ${nextLine}`);
+        i++;
+      } else {
+        mergedLines.push(currentLine);
+      }
+    }
+
+    const ignoreKeywords = /tax|tip|total|subtotal|discount|change|payment|cash|visa|mastercard/i;
+    const priceRegex = /\d+\.\d{2}/;
+    return mergedLines.filter(line => priceRegex.test(line) && !ignoreKeywords.test(line));
+  };
 
   return (
-    <SafeAreaView style={styles.scroll}>
-      <View style={styles.container}>
-        <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Image source={require('../assets/name.png')} style={styles.logo} />
+
+        <TouchableOpacity style={styles.button} onPress={pickImageAndScan}>
+          <Text style={styles.buttonText}>Pick Image and Scan</Text>
+        </TouchableOpacity>
+
         {image && <Image source={{ uri: image }} style={styles.image} />}
+
         <Text style={styles.label}>🧾 Scanned Text:</Text>
         <Text style={styles.result}>{ocrText}</Text>
-      </View>
-      <Button title="Add a Debtor" onPress={() => navigation.navigate('Person')} />
-      <Button title="Go to Gallery" onPress={() => navigation.navigate('Gallery')} />
+
+        <Text style={styles.label}>🍔 Food Items:</Text>
+        {foodItems.map((item, index) => (
+          <Text key={index} style={styles.result}>{item}</Text>
+        ))}
+
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Person')}>
+          <Text style={styles.buttonText}>Add a Debtor</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Gallery')}>
+          <Text style={styles.buttonText}>Go to Gallery</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
-    
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#fff' },
-  container: { padding: 20, alignItems: 'center' },
-  container: { padding: 20, alignItems: 'center' },
-  image: { width: 300, height: 400, marginVertical: 20 },
-  label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
-  result: { marginTop: 10, fontSize: 16, textAlign: 'left', width: '100%' },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 20,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  image: {
+    width: 300,
+    height: 400,
+    marginVertical: 20,
+  },
+  label: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+  },
+  result: {
+    marginTop: 10,
+    fontSize: 16,
+    textAlign: 'left',
+    width: '100%',
+  },
+  logo: {
+    width: 400,
+    height: 120,
+    marginBottom: 20,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+    marginVertical: 8,
+    width: '70%',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
 });
