@@ -97,7 +97,10 @@ export default function Home({ navigation }) {
           <Text style={styles.buttonText}>Add a Debtor</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Gallery')}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Gallery', { foodItems, imageUri: image })}
+        >
           <Text style={styles.buttonText}>Go to Gallery</Text>
         </TouchableOpacity>
       </ScrollView>
