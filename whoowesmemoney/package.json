@@ -10,11 +10,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
-<<<<<<< Updated upstream
-=======
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-picker/picker": "^2.11.0",
->>>>>>> Stashed changes
     "@react-navigation/native": "^7.0.19",
     "@react-navigation/stack": "7.2.3",
     "expo": "^52.0.44",

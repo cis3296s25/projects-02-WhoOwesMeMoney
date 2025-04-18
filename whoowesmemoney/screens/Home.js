@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< Updated upstream
-import { View, Button, Image, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
-=======
 import { View, Image, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Alert } from 'react-native';
->>>>>>> Stashed changes
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,8 +10,6 @@ const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
 export default function Home({navigation}) {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
-<<<<<<< Updated upstream
-=======
   const [foodItems, setFoodItems] = useState([]); // For scanned items
   const [manualItems, setManualItems] = useState([]); // For manually added items
   const [restaurantName, setRestaurantName] = useState('');
@@ -26,7 +20,6 @@ export default function Home({navigation}) {
   const [editItemName, setEditItemName] = useState('');
   const [editItemPrice, setEditItemPrice] = useState('');
   const [divideBy, setDivideBy] = useState(''); // Number of people to divide by
->>>>>>> Stashed changes
 
   const pickImageAndScan = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -82,26 +75,11 @@ export default function Home({navigation}) {
     );
 
     const data = await response.json();
-    console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
-    console.log(JSON.stringify(data, null, 2)); // 👈 Add this line
+    console.log(JSON.stringify(data, null, 2));
     const text = data.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
     setOcrText(text);
-  };
 
-
-<<<<<<< Updated upstream
-
-  return (
-    <SafeAreaView style={styles.scroll}>
-      <View style={styles.container}>
-        <Button title="Pick Image and Scan" onPress={pickImageAndScan} />
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-        <Text style={styles.label}>🧾 Scanned Text:</Text>
-        <Text style={styles.result}>{ocrText}</Text>
-      </View>
-      <Button title="Add a Debtor" onPress={() => navigation.navigate('Person')} />
-      <Button title="Go to Gallery" onPress={() => navigation.navigate('Gallery')} />
-=======
+    const lines = text.split('\n'); // Define `lines` here
     const mergedLines = [];
     for (let i = 0; i < lines.length; i++) {
       const currentLine = lines[i];
@@ -126,14 +104,14 @@ export default function Home({navigation}) {
         return {
           id: Math.random().toString(36).substring(2, 9),
           description,
-          price: parseFloat(price.toFixed(2)), // Ensure price is a number rounded to 2 decimals
-          originalPrice: parseFloat(price.toFixed(2)), // Store the original price
+          price: parseFloat(price.toFixed(2)),
+          originalPrice: parseFloat(price.toFixed(2)),
           date: new Date().toLocaleDateString(),
           selected: false,
         };
       });
 
-    return foodItemObjects;
+    setFoodItems(foodItemObjects); // Save the parsed items to state
   };
 
   const toggleItemSelection = (id, isManual = false) => {
@@ -318,7 +296,7 @@ export default function Home({navigation}) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Image source={require('../assets/name.png')} style={styles.logo} />
+
 
         {/* Top Buttons Section */}
         <View style={styles.borderedContainer}>
@@ -336,7 +314,7 @@ export default function Home({navigation}) {
         {/* Food Items Section */}
         {foodItems.length > 0 && (
           <>
-            <Text style={styles.label}>Scanned Food Items:</Text>
+            <Text style={styles.label}>Scanned Items:</Text>
             <View style={styles.foodItemsContainer}>
               {foodItems.map((item) => (
                 <View key={item.id} style={styles.foodItemContainer}>
@@ -491,21 +469,12 @@ export default function Home({navigation}) {
           </TouchableOpacity>
         </View>
       </ScrollView>
->>>>>>> Stashed changes
     </SafeAreaView>
-    
+
   );
 }
 
 const styles = StyleSheet.create({
-<<<<<<< Updated upstream
-  scroll: { flex: 1, backgroundColor: '#fff' },
-  container: { padding: 20, alignItems: 'center' },
-  container: { padding: 20, alignItems: 'center' },
-  image: { width: 300, height: 400, marginVertical: 20 },
-  label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
-  result: { marginTop: 10, fontSize: 16, textAlign: 'left', width: '100%' },
-=======
   scrollContent: {
     flexGrow: 1,
     padding: 20,
@@ -605,5 +574,4 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 20,
   },
->>>>>>> Stashed changes
 });

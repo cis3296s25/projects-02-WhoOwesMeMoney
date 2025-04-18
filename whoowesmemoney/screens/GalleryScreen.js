@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream
-import React from 'react';
-import { View, Text, Button } from 'react-native';
-
-export default function GalleryScreen({ navigation }) {
-  return (
-    <View>
-      <Text>Gallery</Text>
-    </View>
-  );
-}
-=======
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -249,4 +237,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
->>>>>>> Stashed changes
