@@ -12,7 +12,8 @@ I can assign my friends the item they had and it will give me the total the owe 
 5. Install dependencies (In terminal: npm install)
 6. Start the development server (In terminal: npx expo start)
 7. On IOS/Android go to app store and download the "Expo Go" app
-8. You can either scan the QR code or just be on the same wifi connection in the app your pc should show up, and you can connect directly to the app to run
+8. Login to expo using Username: WOMMTesting , and Password: WOMMTESTACCT
+9. You can either scan the QR code or just be on the same wifi connection in the app your pc should show up, and you can connect directly to the app to run
 
 # To Build
 In terminal:
