@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallBack, useEffect } from 'react';
-import { View, Button, Image, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import { View, Button, Image, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, ListView, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
@@ -23,7 +23,10 @@ export default function Person({ navigation, route }){
 
   useEffect(() => {
     let ignore = false;
-    getDebtor();
+    if(!ignore){
+      getDebtor();
+    }
+    
     if (route.params?.selectedItems) {
       setAssignedItems(route.params.selectedItems);
     }
@@ -89,16 +92,10 @@ const viewDebtorDetails = () => {
 
   
 
-  const storeData = async () =>{
-    try{
-      await AsyncStorage.setItem(
-        token,
-        JSON.stringify(people),
-      );
-    console.log("success!");
-    } catch (error){
-      // Error
-      console.log(error);
+  const handleSubmit = () => {
+    if (nameHolder.trim() === '') {
+      alert('Please Enter a Name!');
+      return;
     }
   };
 
@@ -115,6 +112,19 @@ const viewDebtorDetails = () => {
       console.log("failure in getting debtors");
     }
   }; 
+
+  const storeData = async () =>{
+    try{
+      await AsyncStorage.setItem(
+        token,
+        JSON.stringify(people),
+      );
+    console.log("success!");
+    } catch (error){
+      // Error
+      console.log(error);
+    }
+  };
   
   return (
     <ScrollView style={styles.scroll}>
@@ -165,7 +175,15 @@ const viewDebtorDetails = () => {
           >
             <Text style={styles.buttonText}>Check Debt</Text>
           </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.button, styles.secondaryButton]} 
+            onPress={() => navigation.navigate('Debtor')}
+          >
+            <Text style={styles.buttonText}>Check Debtors</Text>
+          </TouchableOpacity>
         </View>
+        
+
       </View>
     </ScrollView>
   );
@@ -265,3 +283,5 @@ const viewDebtorDetails = () => {
       fontSize: 16
     }
   });
+
+
