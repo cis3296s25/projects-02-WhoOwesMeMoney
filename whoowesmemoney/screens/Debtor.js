@@ -113,7 +113,7 @@ export default function Debtor({ navigation }) {
                   <View key={index} style={styles.itemRow}>
                     <Text style={styles.itemDescription}>{item.description}</Text>
                     <Text style={styles.itemPrice}>
-                      ${item.price.toFixed(2)} ({item.date})
+                      ${!isNaN(parseFloat(item.price)) ? parseFloat(item.price).toFixed(2) : '0.00'} ({item.date})
                     </Text>
                   </View>
                 ))
