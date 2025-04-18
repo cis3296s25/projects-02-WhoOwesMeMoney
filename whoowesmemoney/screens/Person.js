@@ -70,6 +70,8 @@ export default function Person({ navigation }){
     saveDebtors(updatedList);
     setNameHolder('');
   };
+  const [editingIndex, setEditingIndex] = useState(null);
+
 
   const renderDebtor = ({ item, index }) => {
     const handleAmountChange = (text) => {
@@ -85,20 +87,24 @@ export default function Person({ navigation }){
       setDebtors(updatedDebtors);
       saveDebtors(updatedDebtors);
     };
+
+    const isEditing = editingIndex === index;
   
     return (
       <View style={styles.debtorRow}>
         <Text style={styles.debtorName}>{item.fullname}</Text>
-        <TextInput
-          style={styles.debtorAmount}
-          keyboardType="numeric"
-          value={item.owed.toString()}
-          onChangeText={handleAmountChange}
-          placeholder="0.00"
-        />
-        <Text style={styles.deleteBtn} onPress={deleteDebtor}>
-         🗑️
-        </Text>
+          <View style={styles.amountWrapper}>
+            <Text style={styles.dollarSign}>$</Text> 
+              <TextInput
+                style={[styles.debtorAmount, !isEditing && styles.debtorAmountInactive]}
+                keyboardType="numeric"
+                value={item.owed.toString()}
+                onChangeText={handleAmountChange}
+                onFocus={() => setEditingIndex(index)}
+                onBlur={() => setEditingIndex(null)}
+              />
+          </View>
+        <Text style={styles.deleteBtn} onPress={deleteDebtor}> 🗑️ </Text>
       </View>
     );
   };
@@ -148,14 +154,12 @@ export default function Person({ navigation }){
                 onChangeText={(text) => setNameHolder(text)}
                 />
                 <Button title="Make new Debtor" onPress={()=>handleSubmit(nameHolder)}/>
-                <Button title="Who Owes Me Money" onPress={()=>handleGet()}/>
                 <Text style={styles.label}>These are my debtors and what they owe:</Text>
                 <FlatList
                   data={debtors}
                   renderItem={renderDebtor}
                   keyExtractor={(item, index) => index.toString()}
                 />
-                {/* <Text style={styles.label}>{readList}</Text> */}
               </View>
          </View>
     )
@@ -215,6 +219,23 @@ export default function Person({ navigation }){
       width: '50%',
       backgroundColor: '#fff'
     },
+    amountWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+      paddingHorizontal: 6,
+      borderRadius: 5,
+    },
+    dollarSign: {
+      fontSize: 16,
+      marginRight: 2,
+      color: '#000',
+    },
+    
+    debtorAmountInactive: {
+      borderWidth: 0,
+      backgroundColor: 'transparent',
+    },
     debtorItem: {
       backgroundColor: '#f0f0f0',
       padding: 10,
@@ -244,13 +265,14 @@ export default function Person({ navigation }){
     },
     
     debtorAmount: {
-      flex: 0.4,
+      width: 80,
       padding: 5,
       backgroundColor: '#fff',
       borderColor: '#ccc',
       borderWidth: 1,
       borderRadius: 5,
-      textAlign: 'right',
+      textAlign: 'center',
+      fontSize: 16,
     },
     
   });
