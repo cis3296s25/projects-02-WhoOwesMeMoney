@@ -10,12 +10,19 @@
     "web": "expo start --web"
   },
   "dependencies": {
+<<<<<<< Updated upstream
+=======
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-picker/picker": "^2.11.0",
+>>>>>>> Stashed changes
     "@react-navigation/native": "^7.0.19",
     "@react-navigation/stack": "7.2.3",
     "expo": "^52.0.44",
     "expo-camera": "~16.0.18",
     "expo-file-system": "~18.0.12",
     "expo-image-picker": "~16.0.6",
+    "expo-linear-gradient": "~14.0.2",
+    "expo-media-library": "^17.0.6",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "^0.76.9",
