@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
-export default function GalleryScreen() {
-  const [receipts, setReceipts] = useState([
-    { id: '1', uri: 'https://via.placeholder.com/150', name: 'Receipt 1' },
-    { id: '2', uri: 'https://via.placeholder.com/150', name: 'Receipt 2' },
-    { id: '3', uri: 'https://via.placeholder.com/150', name: 'Receipt 3' },
-  ]);
+export default function GalleryScreen({ route }) {
+  const { foodItems, imageUri } = route.params;
+
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState('');
+  const [items, setItems] = useState(
+    foodItems.map((item, index) => ({
+      id: `${index + 1}`,
+      name: item,
+    }))
+  );
 
   const handleEdit = (id, name) => {
     setEditingId(id);
@@ -16,9 +19,9 @@ export default function GalleryScreen() {
   };
 
   const handleSave = (id) => {
-    setReceipts((prevReceipts) =>
-      prevReceipts.map((receipt) =>
-        receipt.id === id ? { ...receipt, name: newName } : receipt
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, name: newName } : item
       )
     );
     setEditingId(null);
@@ -28,12 +31,12 @@ export default function GalleryScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Gallery</Text>
+      <Image source={{ uri: imageUri }} style={styles.image} />
       <FlatList
-        data={receipts}
+        data={items}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Image source={{ uri: item.uri }} style={styles.image} />
             {editingId === item.id ? (
               <TextInput
                 style={styles.input}
@@ -46,7 +49,7 @@ export default function GalleryScreen() {
               <TouchableOpacity
                 onPress={() => handleEdit(item.id, item.name)}
                 activeOpacity={0.7}
-                style={styles.touchable} // Added style for better touch area
+                style={styles.touchable}
               >
                 <Text style={styles.name}>{item.name}</Text>
               </TouchableOpacity>
@@ -70,14 +73,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
+  image: {
+    width: '100%',
+    height: 200,
+    marginBottom: 16,
+    resizeMode: 'contain',
+  },
   item: {
     marginBottom: 16,
     alignItems: 'center',
-  },
-  image: {
-    width: 150,
-    height: 150,
-    marginBottom: 8,
   },
   name: {
     fontSize: 16,
@@ -88,9 +92,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     fontSize: 16,
     textAlign: 'center',
-    width: 150,
+    width: '80%',
   },
   touchable: {
-    padding: 8, // Add padding to make the touchable area larger
+    padding: 8,
   },
 });
