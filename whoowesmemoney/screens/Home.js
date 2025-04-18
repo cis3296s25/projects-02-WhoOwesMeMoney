@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Image, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity, Modal, FlatList } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
@@ -9,6 +9,8 @@ export default function Home({ navigation }) {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
   const [foodItems, setFoodItems] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const pickImageAndScan = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -71,7 +73,51 @@ export default function Home({ navigation }) {
 
     const ignoreKeywords = /tax|tip|total|subtotal|discount|change|payment|cash|visa|mastercard/i;
     const priceRegex = /\d+\.\d{2}/;
-    return mergedLines.filter(line => priceRegex.test(line) && !ignoreKeywords.test(line));
+    
+    // Filter items and convert to structured objects
+    const foodItemObjects = mergedLines
+      .filter(line => priceRegex.test(line) && !ignoreKeywords.test(line))
+      .map(line => {
+        const price = parseFloat(line.match(priceRegex)[0]);
+        
+        const description = line.replace(priceRegex, '').trim();
+        
+        return {
+          id: Math.random().toString(36).substring(2, 9),
+          description,
+          price,
+          selected: false
+        };
+      });
+      
+    return foodItemObjects;
+  };
+
+  const toggleItemSelection = (id) => {
+    setFoodItems(prevItems => 
+      prevItems.map(item => 
+        item.id === id ? { ...item, selected: !item.selected } : item
+      )
+    );
+  };
+
+  const navigateToDebtorWithItems = () => {
+    const selectedFoodItems = foodItems.filter(item => item.selected);
+    if (selectedFoodItems.length === 0) {
+      alert('Please select at least one food item');
+      return;
+    }
+    
+    // Calculate total amount
+    const totalAmount = selectedFoodItems.reduce((sum, item) => sum + item.price, 0);
+    
+    // Navigate to Person screen with selected items and total
+    navigation.navigate('Person', { 
+      selectedItems: selectedFoodItems,
+      totalAmount
+    });
+    
+    setModalVisible(false);
   };
 
   return (
@@ -89,18 +135,45 @@ export default function Home({ navigation }) {
         <Text style={styles.result}>{ocrText}</Text>
 
         <Text style={styles.label}>🍔 Food Items:</Text>
-        {foodItems.map((item, index) => (
-          <Text key={index} style={styles.result}>{item}</Text>
-        ))}
+        {foodItems.length > 0 ? (
+          <View style={styles.foodItemsContainer}>
+            {foodItems.map((item, index) => (
+              <TouchableOpacity 
+                key={item.id} 
+                style={[styles.foodItem, item.selected && styles.selectedItem]}
+                onPress={() => toggleItemSelection(item.id)}
+              >
+                <Text style={styles.foodItemText}>
+                  {item.description} - ${item.price.toFixed(2)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+            
+            <TouchableOpacity 
+              style={[styles.button, styles.assignButton]} 
+              onPress={navigateToDebtorWithItems}
+            >
+              <Text style={styles.buttonText}>Assign Selected Items to Debtor</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <Text style={styles.result}>No food items detected</Text>
+        )}
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Person')}>
           <Text style={styles.buttonText}>Add a Debtor</Text>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Debtor')}>
+          <Text style={styles.buttonText}>View Debtors</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Gallery', { foodItems, imageUri: image })}
         >
+
           <Text style={styles.buttonText}>Go to Gallery</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -154,5 +227,28 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     fontSize: 16,
+  },
+  foodItemsContainer: {
+    width: '100%',
+    marginTop: 10,
+  },
+  foodItem: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  selectedItem: {
+    backgroundColor: '#e0f7e0',
+    borderColor: '#4CAF50',
+  },
+  foodItemText: {
+    fontSize: 16,
+  },
+  assignButton: {
+    marginTop: 16,
+    backgroundColor: '#4CAF50',
   },
 });
