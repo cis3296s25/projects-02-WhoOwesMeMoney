@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, Image, Text, ScrollView, StyleSheet, TextInput, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
 
-const STORAGE_KEY = 'tokenator'
+const STORAGE_KEY = 'tokenator';
 
-
-export default function Debtor({ navigation, route }){
-  const [nameHolder, setNameHolder] = useState('');
-  const [person, setPerson] = useState([{}]);
-  const [debtors, setDebtors] = useState([]); 
+export default function Debtor({ navigation }) {
+  const [debtors, setDebtors] = useState([]);
+  const [selectedDebtor, setSelectedDebtor] = useState(null);
+  const [paymentAmount, setPaymentAmount] = useState('');
 
   useEffect(() => {
     loadDebtors();
@@ -35,144 +32,175 @@ export default function Debtor({ navigation, route }){
     }
   };
 
+  const handlePayment = () => {
+    if (!paymentAmount || isNaN(paymentAmount)) {
+      alert('Please enter a valid payment amount.');
+      return;
+    }
 
-  const [editingIndex, setEditingIndex] = useState(null);
+    const updatedDebtors = debtors.map((debtor) => {
+      if (debtor.name === selectedDebtor.name) {
+        const payment = {
+          description: 'Payment',
+          price: -Math.abs(parseFloat(paymentAmount)),
+          date: new Date().toLocaleDateString(),
+        };
+        return {
+          ...debtor,
+          owed: Math.max(0, debtor.owed - Math.abs(parseFloat(paymentAmount))),
+          items: [...debtor.items, payment],
+        };
+      }
+      return debtor;
+    });
 
-
-  const renderDebtor = ({ item, index }) => {
-    const handleAmountChange = (text) => {
-      let floatHolder = 0.00;
-      const updatedDebtors = [...debtors];
-      floatHolder = updatedDebtor[index].owed.toFixed(2)
-      updatedDebtors[index].owed = parseFloat(text) || 0;
-      setDebtors(updatedDebtors);
-      saveDebtors(updatedDebtors);
-    };
-  
-    const deleteDebtor = () => {
-      const updatedDebtors = [...debtors];
-      updatedDebtors.splice(index, 1); // remove debtor at index
-      setDebtors(updatedDebtors);
-      saveDebtors(updatedDebtors);
-    };
-
-    const isEditing = editingIndex === index;
-  
-    return (
-      <View style={styles.debtorRow}>
-        <Text style={styles.debtorName}>{item.name}</Text>
-          <View style={styles.amountWrapper}>
-            <Text style={styles.dollarSign}>$</Text> 
-              <TextInput
-                style={[styles.debtorAmount, !isEditing && styles.debtorAmountInactive]}
-                keyboardType="numeric"
-                value={item.owed.toString()}
-                onChangeText={handleAmountChange}
-                onFocus={() => setEditingIndex(index)}
-                onBlur={() => setEditingIndex(null)}
-              />
-          </View>
-        <Text style={styles.deleteBtn} onPress={deleteDebtor}> 🗑️ </Text>
-      </View>
-    );
+    setDebtors(updatedDebtors);
+    saveDebtors(updatedDebtors);
+    setPaymentAmount('');
+    alert('Payment recorded successfully.');
   };
 
-  
+  const clearHistory = () => {
+    const updatedDebtors = debtors.map((debtor) => {
+      if (debtor.name === selectedDebtor.name) {
+        return { ...debtor, items: [], owed: 0 };
+      }
+      return debtor;
+    });
 
-  const readList = 'PLACEHOLDER FOR DISPLAYING DEBTOR LIST';
-  
-    return (
-        <View style={styles.scroll}>
-              <View style={styles.container}>
-                <Button title="Back to Debtor Creation" onPress={() => navigation.navigate('Person')}/>
-                <Text style={styles.label}>These are my debtors and what they owe:</Text>
-                <FlatList
-                  data={debtors}
-                  renderItem={renderDebtor}
-                  keyExtractor={(item, index) => index.toString()}
-                />
-              </View>
-         </View>
-    )
-};
+    setDebtors(updatedDebtors);
+    saveDebtors(updatedDebtors);
+    setSelectedDebtor({ ...selectedDebtor, items: [], owed: 0 });
+    alert('History cleared successfully.');
+  };
 
-  const styles = StyleSheet.create({
-    scroll: { flex: 1, backgroundColor: '#fff' },
-    container: { padding: 20, alignItems: 'center' },
-    image: { width: 300, height: 400, marginVertical: 20 },
-    label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
-    result: { marginTop: 10, fontSize: 16, textAlign: 'left', width: '100%' },
-    input: {
-      borderWidth: 1,
-      borderColor: '#aaa',
-      padding: 10,
-      marginVertical: 10,
-      width: '100%',
-      borderRadius: 5,
-    },
-    amountInput: {
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 5,
-      padding: 5,
-      marginTop: 5,
-      width: '50%',
-      backgroundColor: '#fff'
-    },
-    amountWrapper: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#fff',
-      paddingHorizontal: 6,
-      borderRadius: 5,
-    },
-    dollarSign: {
-      fontSize: 16,
-      marginRight: 2,
-      color: '#000',
-    },
-    
-    debtorAmountInactive: {
-      borderWidth: 0,
-      backgroundColor: 'transparent',
-    },
-    debtorItem: {
-      backgroundColor: '#f0f0f0',
-      padding: 10,
-      marginVertical: 5,
-      width: '100%',
-      borderRadius: 5,
-    },
-    debtorText: {
-      fontSize: 16,
-    },
+  const deleteDebtor = () => {
+    const updatedDebtors = debtors.filter((debtor) => debtor.name !== selectedDebtor.name);
+    setDebtors(updatedDebtors);
+    saveDebtors(updatedDebtors);
+    setSelectedDebtor(null);
+    alert('Debtor deleted successfully.');
+  };
 
-    debtorRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: 10,
-      marginVertical: 5,
-      backgroundColor: '#f0f0f0',
-      borderRadius: 5,
-      width: '100%',
-    },
-    
-    debtorName: {
-      fontSize: 16,
-      fontWeight: '500',
-      flex: 1,
-    },
-    
-    debtorAmount: {
-      width: 80,
-      padding: 5,
-      backgroundColor: '#fff',
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 5,
-      textAlign: 'center',
-      fontSize: 16,
-    },
-    
-  });
+  const renderDebtor = ({ item }) => (
+    <TouchableOpacity
+      style={styles.debtorRow}
+      onPress={() => setSelectedDebtor(item)}
+    >
+      <Text style={styles.debtorName}>{item.name}</Text>
+      <Text style={styles.debtorAmount}>${item.owed.toFixed(2)}</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+
+      <Text style={styles.label}>Debtors List:</Text>
+      <FlatList
+        data={debtors}
+        renderItem={renderDebtor}
+        keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={
+          selectedDebtor && (
+            <View style={styles.selectedDebtorContainer}>
+              <Text style={styles.sectionTitle}>Debtor Details</Text>
+              <Text style={styles.debtorName}>Name: {selectedDebtor.name}</Text>
+              <Text style={styles.debtorAmount}>Total Owed: ${selectedDebtor.owed.toFixed(2)}</Text>
+
+              <Text style={styles.sectionTitle}>Items:</Text>
+              {selectedDebtor.items.length > 0 ? (
+                selectedDebtor.items.map((item, index) => (
+                  <View key={index} style={styles.itemRow}>
+                    <Text style={styles.itemDescription}>{item.description}</Text>
+                    <Text style={styles.itemPrice}>
+                      ${item.price.toFixed(2)} ({item.date})
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.noItemsText}>No items found.</Text>
+              )}
+
+              <Text style={styles.sectionTitle}>Record Payment:</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter payment amount"
+                keyboardType="numeric"
+                value={paymentAmount}
+                onChangeText={setPaymentAmount}
+              />
+              <TouchableOpacity style={styles.button} onPress={handlePayment}>
+                <Text style={styles.buttonText}>Record Payment</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: '#FF6347' }]}
+                onPress={clearHistory}
+              >
+                <Text style={styles.buttonText}>Clear History</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: '#FF0000' }]}
+                onPress={deleteDebtor}
+              >
+                <Text style={styles.buttonText}>Delete Debtor</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        }
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  label: { marginTop: 10, fontSize: 16, fontWeight: 'bold' },
+  debtorRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+  },
+  debtorName: { fontSize: 16, fontWeight: '500' },
+  debtorAmount: { fontSize: 16, fontWeight: '500' },
+  selectedDebtorContainer: {
+    marginTop: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+  },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+  itemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  itemDescription: { fontSize: 16 },
+  itemPrice: { fontSize: 16, fontWeight: '500' },
+  noItemsText: { fontSize: 16, fontStyle: 'italic', color: '#888' },
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+    marginVertical: 8,
+    alignItems: 'center',
+  },
+  buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+});
