@@ -10,16 +10,16 @@ const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
 export default function Home({navigation}) {
   const [image, setImage] = useState(null);
   const [ocrText, setOcrText] = useState('');
-  const [foodItems, setFoodItems] = useState([]); // For scanned items
-  const [manualItems, setManualItems] = useState([]); // For manually added items
+  const [foodItems, setFoodItems] = useState([]);
+  const [manualItems, setManualItems] = useState([]);
   const [restaurantName, setRestaurantName] = useState('');
   const [manualItemName, setManualItemName] = useState('');
   const [manualItemPrice, setManualItemPrice] = useState('');
-  const [showManualInput, setShowManualInput] = useState(false); // Toggle for manual input visibility
-  const [editItemId, setEditItemId] = useState(null); // Track the item being edited
+  const [showManualInput, setShowManualInput] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
   const [editItemName, setEditItemName] = useState('');
   const [editItemPrice, setEditItemPrice] = useState('');
-  const [divideBy, setDivideBy] = useState(''); // Number of people to divide by
+  const [divideBy, setDivideBy] = useState('');
 
   const pickImageAndScan = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -31,7 +31,7 @@ export default function Home({navigation}) {
     const uri = result.assets[0].uri;
     setImage(uri);
 
-    // Save the image to the gallery
+
     await saveReceiptToGallery(uri, false);
 
     const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
@@ -48,7 +48,7 @@ export default function Home({navigation}) {
     const uri = result.assets[0].uri;
     setImage(uri);
 
-    // Save the image to the gallery
+
     await saveReceiptToGallery(uri, false);
 
     const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
@@ -79,7 +79,7 @@ export default function Home({navigation}) {
     const text = data.responses?.[0]?.fullTextAnnotation?.text || 'No text found';
     setOcrText(text);
 
-    const lines = text.split('\n'); // Define `lines` here
+    const lines = text.split('\n');
     const mergedLines = [];
     for (let i = 0; i < lines.length; i++) {
       const currentLine = lines[i];
@@ -111,7 +111,7 @@ export default function Home({navigation}) {
         };
       });
 
-    setFoodItems(foodItemObjects); // Save the parsed items to state
+    setFoodItems(foodItemObjects);
   };
 
   const toggleItemSelection = (id, isManual = false) => {
@@ -160,10 +160,10 @@ export default function Home({navigation}) {
     const newItem = {
       id: Math.random().toString(36).substring(2, 9),
       description: manualItemName,
-      price: parseFloat(manualItemPrice).toFixed(2), // Ensure price is a number rounded to 2 decimals
-      originalPrice: parseFloat(manualItemPrice).toFixed(2), // Store original price
+      price: parseFloat(manualItemPrice).toFixed(2),
+      originalPrice: parseFloat(manualItemPrice).toFixed(2),
       date: new Date().toLocaleDateString(),
-      selected: true, // Auto-highlight the item
+      selected: true,
     };
 
     setManualItems((prevItems) => [...prevItems, newItem]);
@@ -223,7 +223,7 @@ export default function Home({navigation}) {
     setEditItemId(item.id);
     setEditItemName(item.description);
     setEditItemPrice(item.price.toString());
-    setDivideBy(''); // Reset divide input
+    setDivideBy('');
   };
 
   const saveEditedItem = () => {
@@ -242,24 +242,24 @@ export default function Home({navigation}) {
   const divideItemPrice = (value) => {
     const divisor = parseInt(value, 10);
 
-    // If the input is empty, reset the price to the original price
+
     if (!value) {
       const item = foodItems.find((item) => item.id === editItemId);
       if (item) {
         setEditItemPrice(item.originalPrice.toString());
       }
-      setDivideBy(''); // Clear the divideBy state
+      setDivideBy('');
       return;
     }
 
     if (!divisor || divisor <= 0) {
-      setDivideBy(''); // Reset the input if invalid
+      setDivideBy('');
       return;
     }
 
-    setDivideBy(value); // Update the divideBy state
+    setDivideBy(value);
 
-    // Update the editItemPrice dynamically
+
     const item = foodItems.find((item) => item.id === editItemId);
     if (item) {
       const newPrice = parseFloat((item.originalPrice / divisor).toFixed(2));
@@ -270,7 +270,7 @@ export default function Home({navigation}) {
   const divideManualItemPrice = (id, value) => {
     const divisor = parseInt(value, 10);
 
-    // If the input is empty, reset the price to the original price
+
     if (!value) {
       setManualItems((prevItems) =>
         prevItems.map((item) =>
@@ -281,7 +281,7 @@ export default function Home({navigation}) {
     }
 
     if (!divisor || divisor <= 0) {
-      return; // Do nothing if the input is invalid
+      return;
     }
 
     setManualItems((prevItems) =>

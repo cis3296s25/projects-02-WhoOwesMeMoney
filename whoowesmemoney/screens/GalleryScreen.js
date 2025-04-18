@@ -14,10 +14,9 @@ export default function GalleryScreen({ navigation, route }) {
   useEffect(() => {
     loadReceipts();
 
-    // Check if a receipt is imported from Home
     if (route.params?.imageUri) {
       const imageUri = route.params.imageUri;
-      addReceipt(imageUri, true); // Set as parsed since it came from Home
+      addReceipt(imageUri, true); 
     }
   }, [route.params]);
 
