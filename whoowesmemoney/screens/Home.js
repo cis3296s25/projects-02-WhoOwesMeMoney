@@ -3,6 +3,8 @@ import { View, Image, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpaci
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import logo from '../assets/name.png';
+
 
 
 const GOOGLE_CLOUD_VISION_API_KEY = 'AIzaSyAN5Y8DR9r00Ssu7X5ihaLdjwwXYAf_BMs';
@@ -297,6 +299,8 @@ export default function Home({navigation}) {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
 
+      {/* Logo goes here */}
+      <Image source={logo} style={styles.logo} />
 
         {/* Top Buttons Section */}
         <View style={styles.borderedContainer}>
